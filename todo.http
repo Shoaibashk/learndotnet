@@ -1,0 +1,21 @@
+POST http://localhost:5235/Tenant
+Content-Type: application/json
+
+{
+  "id": "2",
+  "identifier": "/NEWDB/",
+  "name": "NEWDB"
+ }
+
+###
+POST http://localhost:5235/todoitems
+tenant: /DATADB/
+Content-Type: application/json
+
+ {
+  "id": 0,
+  "name": "mssqp",
+  "description": "testing mssql",
+  "status": "working",
+  "isComplete": false
+}
