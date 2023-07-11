@@ -2,14 +2,14 @@ POST http://localhost:5235/Tenant
 Content-Type: application/json
 
 {
-  "id": "2",
-  "identifier": "/NEWDB/",
-  "name": "NEWDB"
+  "id": "1",
+  "identifier": "Apple",
+  "name": "Apple"
  }
 
 ###
-POST http://localhost:5235/todoitems
-tenant: /DATADB/
+POST http://localhost:5235/todo
+tenant: Apple
 Content-Type: application/json
 
  {

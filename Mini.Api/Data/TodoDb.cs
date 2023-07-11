@@ -9,15 +9,6 @@ namespace Mini.Api.Data;
 public class TodoDbContext : EFCoreStoreDbContext<TenantInfo>
 {
     public DbSet<Todo>? Todos { get; set; }
-
-    // public TodoDbContext(ITenantInfo tenantInfo) : base(tenantInfo)
-    // {
-    // }
-
-    // public TodoDbContext(ITenantInfo tenantInfo, DbContextOptions options) : base(tenantInfo, options)
-    // {
-    // }
-
      public TodoDbContext(DbContextOptions options) : base(options)
     {
     }
