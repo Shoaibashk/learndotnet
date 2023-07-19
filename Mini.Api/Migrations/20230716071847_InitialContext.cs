@@ -5,7 +5,7 @@
 namespace Mini.Api.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigration : Migration
+    public partial class InitialContext : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -25,7 +25,7 @@ namespace Mini.Api.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Todos",
+                name: "Todo",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -34,11 +34,11 @@ namespace Mini.Api.Migrations
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsComplete = table.Column<bool>(type: "bit", nullable: false),
-                    TenantId = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false)
+                    TenantId = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Todos", x => x.Id);
+                    table.PrimaryKey("PK_Todo", x => x.Id);
                 });
 
             migrationBuilder.CreateIndex(
@@ -56,7 +56,7 @@ namespace Mini.Api.Migrations
                 name: "TenantInfo");
 
             migrationBuilder.DropTable(
-                name: "Todos");
+                name: "Todo");
         }
     }
 }

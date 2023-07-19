@@ -1,3 +1,4 @@
+using System.Net;
 using Finbuckle.MultiTenant;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -10,10 +11,14 @@ public static class TodoController
     public static void MapTodoApi(this IEndpointRouteBuilder app)
     {
         app.MapPost("/Tenant", async ([FromBody] TenantInfo tenant, IMultiTenantStore<TenantInfo> store) => await store.TryAddAsync(tenant));
+        app.MapGet("/Tenant", async (IMultiTenantStore<TenantInfo> store) => await store.GetAllAsync());
 
-        app.MapGet("/todos", async (TodoDbContext db) =>
-            await db.Todos!.ToListAsync());
-
+        app.MapGet("/todos", async (TodoDbContext db, HttpContext context) =>
+        {
+            var tenantId = context.GetMultiTenantContext<TenantInfo>()?.TenantInfo!.Identifier;
+            var ten = await db.TenantInfo!.ToListAsync();
+            var todos = await db.Todos!.ToListAsync();
+        });
         app.MapGet("/todo/complete", async (TodoDbContext db) =>
             await db.Todos!.Where(t => t.IsComplete).ToListAsync());
 
@@ -23,8 +28,9 @@ public static class TodoController
                     ? Results.Ok(todo)
                     : Results.NotFound());
 
-        app.MapPost("/todo", async (Todo todo, TodoDbContext db) =>
+        app.MapPost("/todo", async (Todo todo, TodoDbContext db, HttpContext context) =>
         {
+            todo.TenantId = (context.GetMultiTenantContext<TenantInfo>()?.TenantInfo!.Identifier);
             db.Todos!.Add(todo);
             await db.SaveChangesAsync();
 

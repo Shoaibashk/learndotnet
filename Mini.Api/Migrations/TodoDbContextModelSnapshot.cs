@@ -42,7 +42,7 @@ namespace Mini.Api.Migrations
                         .IsUnique()
                         .HasFilter("[Identifier] IS NOT NULL");
 
-                    b.ToTable("TenantInfo");
+                    b.ToTable("TenantInfo", (string)null);
                 });
 
             modelBuilder.Entity("Mini.Api.Model.Todo", b =>
@@ -66,15 +66,11 @@ namespace Mini.Api.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TenantId")
-                        .IsRequired()
-                        .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Todos");
-
-                    b.HasAnnotation("Finbuckle:MultiTenant", true);
+                    b.ToTable("Todo", (string)null);
                 });
 #pragma warning restore 612, 618
         }
