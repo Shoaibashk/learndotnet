@@ -37,16 +37,17 @@ public static class TodoController
             return Results.Created($"/todo/{todo.Id}", todo);
         });
 
-        app.MapPut("/todo/{id}", async (int id, Todo inputTodo, TodoDbContext db) =>
+        app.MapPut("/todo/{id}", async (int id, Todo inputTodo, TodoDbContext db, HttpContext context, CancellationToken cancellationToken) =>
         {
-            var todo = await db.Todos!.FindAsync(id);
+            var tenantId = context.GetMultiTenantContext<TenantInfo>()?.TenantInfo!.Identifier;
+            var todo = await db.Todos.Where(t => t.TenantId == tenantId).FirstOrDefaultAsync(t => t.Id == id, cancellationToken: cancellationToken);
 
             if (todo is null) return Results.NotFound();
 
             todo.Name = inputTodo.Name;
             todo.IsComplete = inputTodo.IsComplete;
 
-            await db.SaveChangesAsync();
+            await db.SaveChangesAsync(cancellationToken);
 
             return Results.NoContent();
         });
