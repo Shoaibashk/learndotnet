@@ -11,8 +11,8 @@ using Mini.Api.Data;
 namespace Mini.Api.Migrations
 {
     [DbContext(typeof(TodoDbContext))]
-    [Migration("20230716071847_InitialContext")]
-    partial class InitialContext
+    [Migration("20230721045805_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -1,32 +1,32 @@
-GET http://localhost:7021/Tenant
+GET http://localhost:5235/Tenant
 Content-Type: application/json
 ###
-POST http://localhost:7021/Tenant
+POST http://localhost:5235/Tenant
 Content-Type: application/json
 
 {
-  "id": "1",
-  "identifier": "apl",
-  "name": "apl"
+  "id": "2",
+  "identifier": "sam",
+  "name": "sam"
  }
 
 ###
-POST http://localhost:7021/todo
-tenant: apl
+POST http://localhost:5235/todo
+tenant: sam
 Content-Type: application/json
 
  {
   "id": 0,
-  "name": "mssqp",
-  "description": "testing mssql",
-  "status": "working",
+  "name": "sam",
+  "description": "testing sam",
+  "status": "working for sam",
   "isComplete": false
 }
 ###
-GET  http://localhost:7021/todos
+GET  http://localhost:5235/todos
 tenant: apl
 Content-Type: application/json
 ###
-GET  http://localhost:7021/todo/1
+GET  http://localhost:5235/todo/1
 tenant: apl
 Content-Type: application/json

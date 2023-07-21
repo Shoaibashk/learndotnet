@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Mini.Api.Data;
 using Mini.Api.Model;
+using Mini.Api.Service;
 
 namespace Mini.Api.Controller;
 public static class TodoController
@@ -13,12 +14,12 @@ public static class TodoController
         app.MapPost("/Tenant", async ([FromBody] TenantInfo tenant, IMultiTenantStore<TenantInfo> store) => await store.TryAddAsync(tenant));
         app.MapGet("/Tenant", async (IMultiTenantStore<TenantInfo> store) => await store.GetAllAsync());
 
-        app.MapGet("/todos", async (TodoDbContext db, HttpContext context) =>
+        app.MapGet("/todos", async (TodoDbContext db) =>
         {
-            var tenantId = context.GetMultiTenantContext<TenantInfo>()?.TenantInfo!.Identifier;
-            var ten = await db.TenantInfo!.ToListAsync();
             var todos = await db.Todos!.ToListAsync();
+            return Results.Ok(todos);
         });
+
         app.MapGet("/todo/complete", async (TodoDbContext db) =>
             await db.Todos!.Where(t => t.IsComplete).ToListAsync());
 
@@ -28,19 +29,18 @@ public static class TodoController
                     ? Results.Ok(todo)
                     : Results.NotFound());
 
-        app.MapPost("/todo", async (Todo todo, TodoDbContext db, HttpContext context) =>
+        app.MapPost("/todo", async (Todo todo, TodoDbContext db) =>
         {
-            todo.TenantId = (context.GetMultiTenantContext<TenantInfo>()?.TenantInfo!.Identifier);
             db.Todos!.Add(todo);
             await db.SaveChangesAsync();
 
             return Results.Created($"/todo/{todo.Id}", todo);
         });
 
-        app.MapPut("/todo/{id}", async (int id, Todo inputTodo, TodoDbContext db, HttpContext context, CancellationToken cancellationToken) =>
+        app.MapPut("/todo/{id}", async (int id, Todo inputTodo, TodoDbContext db, CancellationToken cancellationToken) =>
         {
-            var tenantId = context.GetMultiTenantContext<TenantInfo>()?.TenantInfo!.Identifier;
-            var todo = await db.Todos.Where(t => t.TenantId == tenantId).FirstOrDefaultAsync(t => t.Id == id, cancellationToken: cancellationToken);
+            // var tenantId = context.GetMultiTenantContext<TenantInfo>()?.TenantInfo!.Identifier;
+            var todo = await db.Todos!.FirstOrDefaultAsync(t => t.Id == id, cancellationToken: cancellationToken);
 
             if (todo is null) return Results.NotFound();
 

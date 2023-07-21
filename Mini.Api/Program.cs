@@ -2,13 +2,23 @@ using Finbuckle.MultiTenant;
 using Microsoft.EntityFrameworkCore;
 using Mini.Api.Controller;
 using Mini.Api.Data;
+using Mini.Api.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddDbContext<TodoDbContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer"));
+    options.EnableDetailedErrors();
+    options.EnableSensitiveDataLogging();
+});
+
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddDbContext<TodoDbContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer")));
-builder.Services.AddMultiTenant<TenantInfo>().WithHeaderStrategy("tenant").WithEFCoreStore<TodoDbContext,TenantInfo>();
-// builder.Services.AddScoped(IMultiTenantStore<TenantInfo>, EFCoreStore<TodoDbContext,TenantInfo>);
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+builder.Services.AddSingleton<ITenantService, TenantService>();
+
+builder.Services.AddMultiTenant<TenantInfo>().WithHeaderStrategy("tenant").WithEFCoreStore<TodoDbContext, TenantInfo>();
+
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
