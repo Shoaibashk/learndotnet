@@ -12,6 +12,7 @@ public static class TodoController
     public static void MapTodoApi(this IEndpointRouteBuilder app)
     {
         app.MapPost("/Tenant", async ([FromBody] TenantInfo tenant, IMultiTenantStore<TenantInfo> store) => await store.TryAddAsync(tenant));
+
         app.MapGet("/Tenant", async (IMultiTenantStore<TenantInfo> store) => await store.GetAllAsync());
 
         app.MapGet("/todos", async (TodoDbContext db) =>
